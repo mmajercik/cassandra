@@ -105,7 +105,7 @@ public class CqlBulkRecordWriter extends RecordWriter<Object, List<ByteBuffer>>
 
     CqlBulkRecordWriter(Configuration conf) throws IOException
     {
-        Config.setOutboundBindAny(true);
+    	DatabaseDescriptor.setOutboundBindAny(true);
         this.conf = conf;
         DatabaseDescriptor.setStreamThroughputOutboundMegabitsPerSec(Integer.parseInt(conf.get(STREAM_THROTTLE_MBITS, "0")));
         maxFailures = Integer.parseInt(conf.get(MAX_FAILED_HOSTS, "0"));
