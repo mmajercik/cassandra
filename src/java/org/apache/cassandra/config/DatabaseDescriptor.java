@@ -677,6 +677,11 @@ public class DatabaseDescriptor
         }
         if (seedProvider.getSeeds().size() == 0)
             throw new ConfigurationException("The seed provider lists no seeds.", false);
+        
+        if (conf.listen_on_broadcast_address)
+        {
+            conf.outbound_bind_any = true;
+        }
     }
 
     private static FileStore guessFileStore(String dir) throws IOException
@@ -1750,6 +1755,16 @@ public class DatabaseDescriptor
             default:
                 throw new AssertionError();
         }
+    }
+
+    public static boolean getOutboundBindAny()
+    {
+        return conf.outbound_bind_any;
+    }
+
+    public static void setOutboundBindAny(boolean value)
+    {
+        conf.outbound_bind_any = value;
     }
 
     public static int getIndexSummaryResizeIntervalInMinutes()
