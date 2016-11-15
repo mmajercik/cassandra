@@ -262,6 +262,10 @@ public class Config
 
     public MemtableAllocationType memtable_allocation_type = MemtableAllocationType.heap_buffers;
 
+    /**
+     * @deprecated No longer needed for streaming protocol. See CASSANDRA-12673 for details. 
+     */
+    @Deprecated
     public boolean outbound_bind_any = false;
 
     public volatile int tombstone_warn_threshold = 1000;
