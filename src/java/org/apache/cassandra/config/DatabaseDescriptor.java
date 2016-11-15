@@ -719,6 +719,11 @@ public class DatabaseDescriptor
 
         if (conf.max_value_size_in_mb == null || conf.max_value_size_in_mb <= 0)
             throw new ConfigurationException("max_value_size_in_mb must be positive", false);
+        
+        if (conf.listen_on_broadcast_address)
+        {
+            conf.outbound_bind_any = true;
+        }
     }
 
     private static FileStore guessFileStore(String dir) throws IOException
@@ -1891,6 +1896,16 @@ public class DatabaseDescriptor
             default:
                 throw new AssertionError();
         }
+    }
+
+    public static boolean getOutboundBindAny()
+    {
+        return conf.outbound_bind_any;
+    }
+
+    public static void setOutboundBindAny(boolean value)
+    {
+        conf.outbound_bind_any = value;
     }
 
     public static int getIndexSummaryResizeIntervalInMinutes()
