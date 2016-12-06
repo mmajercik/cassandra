@@ -967,23 +967,35 @@ public class CompactionManager implements CompactionManagerMBean
 
                 cfs.invalidateCachedRow(row.getKey());
 
+                List<Cell> indexedColumnsInRow = new ArrayList<>();
                 while (row.hasNext())
                 {
                     OnDiskAtom column = row.next();
 
                     if (column instanceof Cell && cfs.indexManager.indexes((Cell) column))
                     {
-                        List<Cell> indexedColumnsInRow = new ArrayList<>();
                         indexedColumnsInRow.add((Cell) column);
-                        
-                        // acquire memtable lock here because secondary index deletion may cause a race. See CASSANDRA-3712
-                        try (OpOrder.Group opGroup = cfs.keyspace.writeOrder.start())
-                        {
-                            cfs.indexManager.deleteFromIndexes(row.getKey(), indexedColumnsInRow, opGroup);
-                        }
+
+                        if (indexedColumnsInRow.size() >= 10000) {
+                        	indexColumns(row, indexedColumnsInRow);
+                        	indexedColumnsInRow.clear();
+                    	}
                     }
                 }
+                
+                if (indexedColumnsInRow.size() > 0) {
+                	indexColumns(row, indexedColumnsInRow);
+                }
+                
                 return null;
+            }
+            
+            private void indexColumns(SSTableIdentityIterator row, List<Cell> indexedColumnsInRow) {
+            	// acquire memtable lock here because secondary index deletion may cause a race. See CASSANDRA-3712
+            	try (OpOrder.Group opGroup = cfs.keyspace.writeOrder.start())
+            	{
+            		cfs.indexManager.deleteFromIndexes(row.getKey(), indexedColumnsInRow, opGroup);
+            	}
             }
         }
     }
