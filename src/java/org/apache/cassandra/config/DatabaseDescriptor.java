@@ -680,7 +680,7 @@ public class DatabaseDescriptor
         
         if (conf.listen_on_broadcast_address)
         {
-            conf.outbound_bind_any = true;
+            conf.outboundBindAny = true;
         }
     }
 
@@ -1759,12 +1759,12 @@ public class DatabaseDescriptor
 
     public static boolean getOutboundBindAny()
     {
-        return conf.outbound_bind_any;
+        return conf.outboundBindAny;
     }
 
     public static void setOutboundBindAny(boolean value)
     {
-        conf.outbound_bind_any = value;
+        conf.outboundBindAny = value;
     }
 
     public static int getIndexSummaryResizeIntervalInMinutes()
