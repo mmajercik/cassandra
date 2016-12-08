@@ -977,25 +977,25 @@ public class CompactionManager implements CompactionManagerMBean
                         indexedColumnsInRow.add((Cell) column);
 
                         if (indexedColumnsInRow.size() >= 10000) {
-                        	indexColumns(row, indexedColumnsInRow);
-                        	indexedColumnsInRow.clear();
-                    	}
+                            indexColumns(row, indexedColumnsInRow);
+                            indexedColumnsInRow.clear();
+                        }
                     }
                 }
                 
                 if (indexedColumnsInRow.size() > 0) {
-                	indexColumns(row, indexedColumnsInRow);
+                    indexColumns(row, indexedColumnsInRow);
                 }
                 
                 return null;
             }
             
             private void indexColumns(SSTableIdentityIterator row, List<Cell> indexedColumnsInRow) {
-            	// acquire memtable lock here because secondary index deletion may cause a race. See CASSANDRA-3712
-            	try (OpOrder.Group opGroup = cfs.keyspace.writeOrder.start())
-            	{
-            		cfs.indexManager.deleteFromIndexes(row.getKey(), indexedColumnsInRow, opGroup);
-            	}
+                // acquire memtable lock here because secondary index deletion may cause a race. See CASSANDRA-3712
+                try (OpOrder.Group opGroup = cfs.keyspace.writeOrder.start())
+                {
+                    cfs.indexManager.deleteFromIndexes(row.getKey(), indexedColumnsInRow, opGroup);
+                }
             }
         }
     }
